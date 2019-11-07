@@ -9,18 +9,8 @@
 #include "soth/api.hpp"
 
 #include <boost/noncopyable.hpp>
-#include <boost/version.hpp>
-
-#ifndef WITHOUT_NOTIFIOR
-
-#if BOOST_VERSION > 105300
 #include <boost/signals2.hpp>
-#define NOTIFIOR_SIGNAL2
-#else
-#include <boost/signals.hpp>
-#endif
-
-#endif
+#include <boost/version.hpp>
 
 namespace soth {
 class BaseY;
@@ -76,20 +66,11 @@ class SOTH_EXPORT BasicStage : boost::noncopyable {
   VectorBound getBounds() const;
   VectorBound& getBoundsInternal();
 
- public: /* Notification, could be removed conditionnaly to the lack of
-            boost::signal. */
-#ifndef WITHOUT_NOTIFIOR
+ public:
   typedef boost::function<void(std::string, ConstraintRef, std::string)>
       listener_function_t;
-#ifdef NOTIFIOR_SIGNAL2
   boost::signals2::signal<void(std::string, ConstraintRef, std::string)>
       notifior;
-#else
-  boost::signal<void(std::string, ConstraintRef, std::string)> notifior;
-#endif
-#else
-  inline void notifior(int, int, std::string) {}
-#endif
 };
 
 }  // namespace soth

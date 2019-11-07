@@ -116,14 +116,12 @@ void HCOD::setNameByOrder(const std::string root) {
 }
 void HCOD::notifiorRegistration(const Stage::listener_function_t& f,
                                 int stageRank) {
-#ifndef WITHOUT_NOTIFIOR
   if (stageRank == -1)
     for (size_t i = 0; i < stages.size(); ++i) {
       stages[i]->notifior.connect(f);
     }
   else
     stages[stageRank]->notifior.connect(f);
-#endif
 }
 
 void HCOD::setDamping(const double& d) {
