@@ -1,10 +1,6 @@
 #ifndef __SOTH_SUB_MATRIX_H__
 #define __SOTH_SUB_MATRIX_H__
 
-#if EIGEN_VERSION_AT_LEAST(3, 2, 92)
-#define XENIAL_DETECTED 1
-#endif
-
 /*DEBUG*/ #include <iostream>
 
     /* The Eigen::MatrixBase derivations have to be done in the
@@ -26,10 +22,6 @@
   template <typename MatrixType, int PermutationType, bool IsSub>
   struct traits<SubMatrix<MatrixType, PermutationType, IsSub> >
       : traits<MatrixType> {
-#ifndef XENIAL_DETECTED
-    typedef typename nested<MatrixType>::type MatrixTypeNested;
-    typedef typename remove_reference<MatrixTypeNested>::type _MatrixTypeNested;
-#endif
     typedef typename MatrixType::StorageKind StorageKind;
     enum {
       RowsAtCompileTime = (PermutationType == ColPermutation)
@@ -42,12 +34,6 @@
           (IsSub ? MatrixType::MaxRowsAtCompileTime : Dynamic),
       MaxColsAtCompileTime =
           (IsSub ? MatrixType::MaxColsAtCompileTime : Dynamic),
-#ifndef XENIAL_DETECTED
-      Flags = (_MatrixTypeNested::Flags & HereditaryBits) |
-              ei_compute_lvalue_bit<_MatrixTypeNested>::ret,
-      CoeffReadCost = _MatrixTypeNested::CoeffReadCost  // Todo : check that
-    };
-#else
       VectorAtCompileTime =
           (RowsAtCompileTime == 1) || (ColsAtCompileTime == 1),
       Flags = ((MatrixType::Flags & HereditaryBits) |
@@ -90,7 +76,6 @@
 
     // evaluator<MatrixTypeNestedCleaned> m_argImpl;
     const XprType& m_argImpl;
-#endif
   };
   }  // namespace internal
 
@@ -640,11 +625,7 @@
   namespace internal {
   template <typename MatrixType1, typename MatrixType2>
   struct traits<StackMatrix<MatrixType1, MatrixType2> > : traits<MatrixType1> {
-#ifndef XENIAL_DETECTED
-    typedef typename nested<MatrixType1>::type MatrixTypeNested;
-#else
     typedef typename MatrixType1::Nested MatrixTypeNested;
-#endif
     typedef typename remove_reference<MatrixTypeNested>::type _MatrixTypeNested;
     typedef typename MatrixType1::StorageKind StorageKind;
     enum {
@@ -654,12 +635,8 @@
       MaxColsAtCompileTime = MatrixType1::MaxColsAtCompileTime,
       Flags = (_MatrixTypeNested::Flags & HereditaryBits) |
               ei_compute_lvalue_bit<_MatrixTypeNested>::ret,
-#ifndef XENIAL_DETECTED
-      CoeffReadCost = _MatrixTypeNested::CoeffReadCost  // Todo : check that
-#else
       CoeffReadCost =
           evaluator<_MatrixTypeNested>::CoeffReadCost  // Todo : check that
-#endif
     };
   };
   }  // namespace internal
@@ -720,15 +697,11 @@
         return m2(index - r1);
     }
 
-#ifndef XENIAL_DETECTED
-   protected:
-#endif
 
     Base1& m1;
     Base2& m2;
   };
 
-#ifdef XENIAL_DETECTED
   namespace internal {
   template <typename MatrixType1, typename MatrixType2>
   struct evaluator<StackMatrix<MatrixType1, MatrixType2> >
@@ -783,7 +756,6 @@
     Base2& m2;
   };
   }  // namespace internal
-#endif
 }  // namespace soth
 
 #endif  // __SOTH_SUB_MATRIX_H__
