@@ -3,7 +3,7 @@
 #include "soth/debug.hpp"
 
 #include <cstdlib>
-#include "Random.hpp"
+#include "soth/Random.hpp"
 
 #ifdef WIN32
 inline double round(double d) { return floor(d + 0.5); }
